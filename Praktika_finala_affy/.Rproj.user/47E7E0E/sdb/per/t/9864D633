@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "\nlibrary(shiny)\n\n\nheader <- h1(\"Affymetrix Array Data Analysis\")\n\nfileLoader <- fileInput (inputId=\"data_loader\", \n                         label=\"Upload Files\", \n                         multiple=TRUE)\nshinyUI(fluidPage(\n  header, \n  fileLoader,\n  plotOutput(outputId=\"file_list\", width=\"500px\")\n))\n",
+    "created" : 1461765175654.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "259966875",
+    "id" : "9864D633",
+    "lastKnownWriteTime" : 1461765629,
+    "last_content_update" : 1461765629910,
+    "path" : "~/UNI/BIO/Praktika_finala_affy/Affy_analisia/ui.R",
+    "project_path" : "Affy_analisia/ui.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
