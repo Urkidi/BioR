@@ -5,7 +5,7 @@ library(ggplot2)
 
 
 options(shiny.maxRequestSize = 100*1024^2)
-shinyServer(function(input, output) {
+server <- function(input, output) {
    
   
   # REACTIVE VALUES ----------------------------------------------------
@@ -43,6 +43,7 @@ shinyServer(function(input, output) {
     return(data)
   })
   
+  
   # OUTPUTS ------------------------------------------------------------
   
   output$file_list <- renderPlot({
@@ -53,5 +54,22 @@ shinyServer(function(input, output) {
     }
     print(res)
   })
+  output$file_list2 <- renderPlot({
+    raw.data <- getRawData()
+    res <- NULL
+    data.deg <- AffyRNAdeg(raw.data)
+    res <-plotAffyRNAdeg(data.deg)
+    print(res)
+  })
+  # Generate a summary of the data
+  output$summary <- renderTable({
+    input$data_loader$names
+  })
+  # Generate an HTML table view of the data
+  output$table <- renderPlot({
+    hist(getRawData())
+  })
   
-})
+  
+}
+shinyServer(server)
