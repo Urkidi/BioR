@@ -29,7 +29,8 @@ ui <- fluidPage(
                     tabsetPanel(type = "tabs", 
                                 tabPanel("Plot", plotOutput(outputId="file_list", width="500px")),
                                 tabPanel("Hist", plotOutput(outputId="table", width="500px")),
-                                tabPanel("RNA degradation", plotOutput(outputId="file_list2", width="500px"))
+                                tabPanel("RNA degradation", plotOutput(outputId="file_list2", width="500px")),
+                                tabPanel("RQC", plotOutput(outputId="qc", width="500px"))
                     )
                   )
                 )

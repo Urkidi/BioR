@@ -6,6 +6,10 @@ library(ggplot2)
 
 options(shiny.maxRequestSize = 100*1024^2)
 server <- function(input, output) {
+  
+  #variables
+  medians <- NULL
+  id.ref <- NULL
    
   
   # REACTIVE VALUES ----------------------------------------------------
@@ -43,6 +47,12 @@ server <- function(input, output) {
     return(data)
   })
   
+  plotMA <- function (data, index) { 
+    m <- exprs(data[,index]) - exprs(data[,id.ref])
+    a <- (exprs(data[,index]) + exprs(data[,id.ref]))/2
+    ma.plot(a,m,cex=0.75,lwd=3)
+  }
+  
 
   # OUTPUTS ------------------------------------------------------------
   
@@ -78,16 +88,26 @@ server <- function(input, output) {
     res <-plotAffyRNAdeg(data.deg)
     print(res)
   })
+  output$qc <- renderPlot({
+    raw.data <- getRawData()
+    res <- NULL
+    mas5.data <- call.exprs(raw.data,"mas5")
+    qcs <- qc(raw.data,mas5.data)
+    res <-plot(qcs)
+    print(res)
+  })
   
   output$plotMA <- renderPlot({
     raw.data <- getRawData()
+    num.arrays <- length(raw.data)
     res <- NULL
     if(!is.null(rvalues$directory)){
-      medians <- median(exprs(raw.data[,1]))
+      medians <- sapply(1:num.arrays, 
+                        FUN=function(i) {
+                          return(median(exprs(raw.data[,i])))
+                        })
       id.ref <- order(medians)[num.arrays/2]
-      m <- exprs(data[,1]) - exprs(data[,id.ref])
-      a <- (exprs(data[,1]) + exprs(data[,id.ref]))/2
-      res <- ma.plot(a,m,cex=0.75,lwd=3)
+      res <- plotMA(raw.data, 1)
     }
     print(res)
   })
