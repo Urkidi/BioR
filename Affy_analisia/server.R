@@ -53,12 +53,39 @@ server <- function(input, output) {
     ma.plot(a,m,cex=0.75,lwd=3)
   }
   
+  #plotMA <- function (data, index, ref, subsampling=NULL, ...) { 
+      # Function to create the MA plots
+      # ARGS:
+      #   data        - AffyBatch object with the data to create the plot
+      #   index       - Index of the array to be plotted
+      #   ref         - Refrence against which the plot will be created
+      #   subsampling - Number of random values to create the plots
+      #   ...         - Additional arguments for the geom_point function
+      #
+      # RETURN:
+      #   A ggplot2 object with the MA plot
+      #
+    # ref <- ref.array
+    # expr <- exprs(data[,index])
+    # if (!is.null(subsampling)) {
+    #   id <- sample(1:length(expr), subsampling)
+    #   expr <- expr[id]
+    #   ref  <- ref[id]
+    # }
+      
+    #m <- expr - ref
+      #a <- (expr + ref) / 2
+      #  
+      #df <- data.frame(A=a, M=m)
+      #ggplot(df, aes(x=A, y=M)) + geom_point(...) + geom_smooth()
+      #}
+  
 
   # OUTPUTS ------------------------------------------------------------
   
   output$fileName <- renderUI({ 
     
-    selectInput("fileName", "choice a file",rvalues$file_names )
+    selectInput("fileName", "choice a file",grep(".CEL",rvalues$file_names, value=T) )
       
   })
   output$summary <- renderPrint({
