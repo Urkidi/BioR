@@ -30,7 +30,8 @@ ui <- fluidPage(
                                 tabPanel("Plot", plotOutput(outputId="file_list", width="500px")),
                                 tabPanel("Hist", plotOutput(outputId="table", width="500px")),
                                 tabPanel("RNA degradation", plotOutput(outputId="file_list2", width="500px")),
-                                tabPanel("RQC", plotOutput(outputId="qc", width="500px"))
+                                tabPanel("RQC", plotOutput(outputId="qc", width="500px")),
+                                tabPanel("Normalized", plotOutput(outputId="rma", width="500px"))
                     )
                   )
                 )
@@ -48,7 +49,9 @@ ui <- fluidPage(
                        # of the generated distribution
                        mainPanel(
                          tabsetPanel(type = "tabs", 
-                                     tabPanel("PlotMA", plotOutput(outputId="plotMA", width="500px"))
+                                     tabPanel("PlotMA", plotOutput(outputId="plotMA", width="500px")),
+                                     tabPanel("Density Normalized", plotOutput(outputId="densrma", width="500px")),
+                                     tabPanel("Density Normalized Line", plotOutput(outputId="densrmaLine", width="500px"))
                          )
                        )
                      )

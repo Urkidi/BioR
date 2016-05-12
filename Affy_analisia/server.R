@@ -53,33 +53,6 @@ server <- function(input, output) {
     ma.plot(a,m,cex=0.75,lwd=3)
   }
   
-  #plotMA <- function (data, index, ref, subsampling=NULL, ...) { 
-      # Function to create the MA plots
-      # ARGS:
-      #   data        - AffyBatch object with the data to create the plot
-      #   index       - Index of the array to be plotted
-      #   ref         - Refrence against which the plot will be created
-      #   subsampling - Number of random values to create the plots
-      #   ...         - Additional arguments for the geom_point function
-      #
-      # RETURN:
-      #   A ggplot2 object with the MA plot
-      #
-    # ref <- ref.array
-    # expr <- exprs(data[,index])
-    # if (!is.null(subsampling)) {
-    #   id <- sample(1:length(expr), subsampling)
-    #   expr <- expr[id]
-    #   ref  <- ref[id]
-    # }
-      
-    #m <- expr - ref
-      #a <- (expr + ref) / 2
-      #  
-      #df <- data.frame(A=a, M=m)
-      #ggplot(df, aes(x=A, y=M)) + geom_point(...) + geom_smooth()
-      #}
-  
 
   # OUTPUTS ------------------------------------------------------------
   
@@ -122,6 +95,13 @@ server <- function(input, output) {
     res <-plot(qcs)
     print(res)
   })
+  output$rma <- renderPlot({
+    raw.data <- getRawData()
+    res <- NULL
+    rma.data <- call.exprs(raw.data,"rma")
+    res <-boxplot(exprs(rma.data), col=raw.data@phenoData@data$Type)
+    print(res)
+  })
   
   output$plotMA <- renderPlot({
     raw.data <- getRawData()
@@ -135,6 +115,20 @@ server <- function(input, output) {
       id.ref <- order(medians)[num.arrays/2]
       res <- plotMA(raw.data, 1)
     }
+    print(res)
+  })
+  output$densrma <- renderPlot({
+    raw.data <- getRawData()
+    res <- NULL
+    rma.data <- call.exprs(raw.data,"rma")
+    res <-plot(density(exprs(rma.data[,1]),col=raw.data@phenoData@data$Type[1]))
+    print(res)
+  })
+  output$densrmaLine <- renderPlot({
+    raw.data <- getRawData()
+    res <- NULL
+    rma.data <- call.exprs(raw.data,"rma")
+    res <-lines(density(exprs(rma.data[,1])), col=raw.data@phenoData@data$Type[1])
     print(res)
   })
 
