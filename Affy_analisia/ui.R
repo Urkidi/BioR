@@ -40,7 +40,7 @@ ui <- fluidPage(
                        sidebarPanel(
                          #selectInput("fileName", "Select your choice", choices = filename, selected = 1),
                          br(),
-                         verbatimTextOutput("summary2"),
+                         uiOutput("fileName"),
                          br()
                          
                        ),

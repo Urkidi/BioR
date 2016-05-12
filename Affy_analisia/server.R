@@ -56,12 +56,11 @@ server <- function(input, output) {
 
   # OUTPUTS ------------------------------------------------------------
   
-  #output$fileName <- renderTable({ 
-   # if(!is.null(rvalues$directory)){
-    #  rvalues$file_names
-    #}
+  output$fileName <- renderUI({ 
     
-  #})
+    selectInput("fileName", "choice a file",rvalues$file_names )
+      
+  })
   output$summary <- renderPrint({
     if(!is.null(rvalues$directory)){
       dataset <- rvalues$file_names 
