@@ -43,8 +43,22 @@ server <- function(input, output) {
     return(data)
   })
   
-  
+
   # OUTPUTS ------------------------------------------------------------
+  
+  #output$fileName <- renderTable({ 
+   # if(!is.null(rvalues$directory)){
+    #  rvalues$file_names
+    #}
+    
+  #})
+  output$summary <- renderPrint({
+    if(!is.null(rvalues$directory)){
+      dataset <- rvalues$file_names 
+    }
+    
+    list(dataset)
+  })
   
   output$file_list <- renderPlot({
     raw.data <- getRawData()
@@ -54,6 +68,9 @@ server <- function(input, output) {
     }
     print(res)
   })
+  output$table <- renderPlot({
+    hist(getRawData())
+  })
   output$file_list2 <- renderPlot({
     raw.data <- getRawData()
     res <- NULL
@@ -61,15 +78,21 @@ server <- function(input, output) {
     res <-plotAffyRNAdeg(data.deg)
     print(res)
   })
-  # Generate a summary of the data
-  output$summary <- renderTable({
-    input$data_loader$names
-  })
-  # Generate an HTML table view of the data
-  output$table <- renderPlot({
-    hist(getRawData())
-  })
   
+  output$plotMA <- renderPlot({
+    raw.data <- getRawData()
+    res <- NULL
+    if(!is.null(rvalues$directory)){
+      medians <- median(exprs(raw.data[,1]))
+      id.ref <- order(medians)[num.arrays/2]
+      m <- exprs(data[,1]) - exprs(data[,id.ref])
+      a <- (exprs(data[,1]) + exprs(data[,id.ref]))/2
+      res <- ma.plot(a,m,cex=0.75,lwd=3)
+    }
+    print(res)
+  })
+
+
   
 }
 shinyServer(server)
