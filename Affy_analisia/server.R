@@ -46,8 +46,20 @@ server <- function(input, output) {
     }
     return(data)
   })
-    observeEvent(input$delete, { 
-      eliminate ( match(input$filedelete, raw.data) )})
+  
+  # NORMALIZED DATA -----------------------------------------------------------
+  rma.data <- reactive ({ 
+    raw.data <- getRawData()
+    call.exprs(raw.data,"rma")
+    })
+  
+  # PLOT MA ------------------------------------------------------------------
+  
+  createRefArray <- function(data) {
+    expr <- data@assayData$exprs
+    median.expr <- apply(expr, MARGIN=1, FUN=median)
+    return(median.expr)
+  }
   
   plotMA <- function (data, index, ref, subsampling=NULL, ...) { 
     #ref <- ref.array
@@ -64,6 +76,13 @@ server <- function(input, output) {
     df <- data.frame(A=a, M=m)
     ggplot(df, aes(x=A, y=M)) + geom_point(...) + geom_smooth()
   }
+  
+  #-----------------------------------------------------------------
+  
+    observeEvent(input$delete, { 
+      eliminate ( match(input$filedelete, raw.data) )})
+    
+
 
   eliminate <- function(pos){
     rvalues$raw.data <- getRawData
@@ -112,9 +131,8 @@ server <- function(input, output) {
   })
   output$rma <- renderPlot({
     raw.data <- getRawData()
-    res <- NULL
-    rma.data <- call.exprs(raw.data,"rma")
-    res <-boxplot(exprs(rma.data), col=raw.data@phenoData@data$Type)
+    rma <- rma.data()
+    res <-boxplot(exprs(rma), col=rma@phenoData@data$Type)
     print(res)
   })
   
@@ -141,10 +159,8 @@ server <- function(input, output) {
     print(res)
   })
   output$densrma <- renderPlot({
-    raw.data <- getRawData()
-    res <- NULL
-    rma.data <- call.exprs(raw.data,"rma")
-    plot(density(exprs(rma.data[,1])))
+    rma <- rma.data()
+    plot(density(exprs(rma[,1])))
   })
 
 
