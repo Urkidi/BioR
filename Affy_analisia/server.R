@@ -10,9 +10,9 @@ server <- function(input, output) {
   #variables
   medians <- NULL
   id.ref <- NULL
-   
   
-  # REACTIVE VALUES ----------------------------------------------------
+  
+  # REACTIVE VALUES —------------------------------------------------—
   
   rvalues <- reactiveValues()
   rvalues$file_names <- NULL
@@ -20,7 +20,7 @@ server <- function(input, output) {
   rvalues$raw.data <- NULL
   rvalues$processed.data <- NULL
   
-  # DATA UPDATING ------------------------------------------------------
+  # DATA UPDATING —----------------------------------------------------
   
   getRawData <- reactive({
     data <- NULL
@@ -47,13 +47,13 @@ server <- function(input, output) {
     return(data)
   })
   
-  # NORMALIZED DATA -----------------------------------------------------------
+  # NORMALIZED DATA —---------------------------------------------------------
   rma.data <- reactive ({ 
     raw.data <- getRawData()
     call.exprs(raw.data,"rma")
-    })
+  })
   
-  # PLOT MA ------------------------------------------------------------------
+  # PLOT MA —----------------------------------------------------------------
   
   createRefArray <- function(data) {
     expr <- data@assayData$exprs
@@ -77,27 +77,25 @@ server <- function(input, output) {
     ggplot(df, aes(x=A, y=M)) + geom_point(...) + geom_smooth()
   }
   
-  #-----------------------------------------------------------------
+  #---------------------------------------------------------------—
   
-    observeEvent(input$delete, { 
-      eliminate ( match(input$filedelete, raw.data) )})
-    
-
-
+  observeEvent(input$delete, { 
+    eliminate ( match(input$filedelete, raw.data) )})
+  
+  
+  
   eliminate <- function(pos){
     rvalues$raw.data <- getRawData
     rvalues$raw.data <- rvalues$raw.data[-pos]
   }
-  
-
-  # OUTPUTS ------------------------------------------------------------
+  # OUTPUTS —----------------------------------------------------------
   
   
   
   output$fileName <- renderUI({ 
     
     selectInput("fileName", "choice a file",grep(".CEL",rvalues$file_names, value=T))
-      
+    
   })
   output$fileDelete <- renderUI({
     selectInput(inputId = "filedelete", "choice a file",grep(".CEL",rvalues$file_names, value=T))
@@ -162,8 +160,8 @@ server <- function(input, output) {
     rma <- rma.data()
     plot(density(exprs(rma[,1])))
   })
-
-
+  
+  
   
 }
 shinyServer(server)

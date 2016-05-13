@@ -1,4 +1,3 @@
-
 library(shiny)
 
 
@@ -15,47 +14,47 @@ ui <- fluidPage(
   # br() element to introduce extra vertical spacing
   navbarPage("Affymetrix",
              tabPanel("General",
-                sidebarLayout(
-                  sidebarPanel(
-                    br(),
-                    uiOutput("fileDelete"),
-                    actionButton("delete","Delete"),
-                    br()
-                    
-                  ),
-                  # Show a tabset that includes a plot, summary, and table view
-                  # of the generated distribution
-                  mainPanel(
-                    tabsetPanel(type = "tabs", 
-                                tabPanel("Plot", plotOutput(outputId="plot", width="500px")),
-                                tabPanel("Hist", plotOutput(outputId="hist", width="500px")),
-                                tabPanel("RNA degradation", plotOutput(outputId="rna", width="500px")),
-                                tabPanel("QC", plotOutput(outputId="qc", width="500px")),
-                                tabPanel("Normalized", plotOutput(outputId="rma", width="500px"))
-                    )
-                  )
-                )
-            ),
-            tabPanel("Especific",
-                     sidebarLayout(
-                       sidebarPanel(
-                         br(),
-                         uiOutput("fileName"),
-                         br()
-                       ),
-                       # Show a tabset that includes a plot, summary, and table view
-                       # of the generated distribution
-                       mainPanel(
-                         tabsetPanel(type = "tabs", 
-                                     tabPanel("Image", plotOutput(outputId="image", width="500px")),
-                                     tabPanel("PlotMA", plotOutput(outputId="plotMA", width="500px")),
-                                     tabPanel("Density Normalized", plotOutput(outputId="densrma", width="500px"))
-                         )
-                       )
-                     )
-            )
-          
+                      sidebarLayout(
+                        sidebarPanel(
+                          br(),
+                          uiOutput("fileDelete"),
+                          actionButton("delete","Delete"),
+                          br()
+                          
+                        ),
+                        # Show a tabset that includes a plot, summary, and table view
+                        # of the generated distribution
+                        mainPanel(
+                          tabsetPanel(type = "tabs", 
+                                      tabPanel("Plot", plotOutput(outputId="plot", width="500px")),
+                                      tabPanel("Hist", plotOutput(outputId="hist", width="500px")),
+                                      tabPanel("RNA degradation", plotOutput(outputId="rna", width="500px")),
+                                      tabPanel("QC", plotOutput(outputId="qc", width="500px")),
+                                      tabPanel("Normalized", plotOutput(outputId="rma", width="500px"))
+                          )
+                        )
+                      )
+             ),
+             tabPanel("Especific",
+                      sidebarLayout(
+                        sidebarPanel(
+                          br(),
+                          uiOutput("fileName"),
+                          br()
+                        ),
+                        # Show a tabset that includes a plot, summary, and table view
+                        # of the generated distribution
+                        mainPanel(
+                          tabsetPanel(type = "tabs", 
+                                      tabPanel("Image", plotOutput(outputId="image", width="500px")),
+                                      tabPanel("PlotMA", plotOutput(outputId="plotMA", width="500px")),
+                                      tabPanel("Density Normalized", plotOutput(outputId="densrma", width="500px"))
+                          )
+                        )
+                      )
+             )
+             
   )
 )
-  
+
 shinyUI(ui)
