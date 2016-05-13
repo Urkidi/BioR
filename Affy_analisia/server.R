@@ -139,7 +139,8 @@ server <- function(input, output) {
     num.arrays <- length(raw.data)
     res <- NULL
     if(!is.null(rvalues$directory)){
-      res <- image(raw.data[,1])
+      indize <- which(rvalues$file_names==input$fileName)
+      res <- image(raw.data[,indize-1])
       
     }
     print(res)
