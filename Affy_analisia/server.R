@@ -118,6 +118,17 @@ server <- function(input, output) {
     print(res)
   })
   
+  output$image <- renderPlot({
+    raw.data <- getRawData()
+    num.arrays <- length(raw.data)
+    res <- NULL
+    if(!is.null(rvalues$directory)){
+      res <- image(raw.data[,1])
+      
+    }
+    print(res)
+  })
+  
   output$plotMA <- renderPlot({
     raw.data <- getRawData()
     num.arrays <- length(raw.data)
