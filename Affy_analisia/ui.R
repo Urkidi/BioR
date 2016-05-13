@@ -47,6 +47,7 @@ ui <- fluidPage(
                        # of the generated distribution
                        mainPanel(
                          tabsetPanel(type = "tabs", 
+                                     tabPanel("Image", plotOutput(outputId="image", width="500px")),
                                      tabPanel("PlotMA", plotOutput(outputId="plotMA", width="500px")),
                                      tabPanel("Density Normalized", plotOutput(outputId="densrma", width="500px"))
                          )
