@@ -27,9 +27,9 @@ ui <- fluidPage(
                   # of the generated distribution
                   mainPanel(
                     tabsetPanel(type = "tabs", 
-                                tabPanel("Plot", plotOutput(outputId="file_list", width="500px")),
-                                tabPanel("Hist", plotOutput(outputId="table", width="500px")),
-                                tabPanel("RNA degradation", plotOutput(outputId="file_list2", width="500px")),
+                                tabPanel("Plot", plotOutput(outputId="plot", width="500px")),
+                                tabPanel("Hist", plotOutput(outputId="hist", width="500px")),
+                                tabPanel("RNA degradation", plotOutput(outputId="rna", width="500px")),
                                 tabPanel("QC", plotOutput(outputId="qc", width="500px")),
                                 tabPanel("Normalized", plotOutput(outputId="rma", width="500px"))
                     )

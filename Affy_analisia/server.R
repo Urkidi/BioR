@@ -47,8 +47,7 @@ server <- function(input, output) {
     return(data)
   })
     observeEvent(input$delete, { 
-      browser()
-      eliminate ( match(input$filedelete, rvalues$raw.data) )})
+      eliminate ( match(input$filedelete, raw.data) )})
   
   plotMA <- function (data, index, ref, subsampling=NULL, ...) { 
     #ref <- ref.array
@@ -85,50 +84,55 @@ server <- function(input, output) {
     selectInput(inputId = "filedelete", "choice a file",grep(".CEL",rvalues$file_names, value=T))
   })
   
-  output$file_list <- renderPlot({
-    getRawData()
+  output$plot <- renderPlot({
+    raw.data <- getRawData()
     res <- NULL
     if(!is.null(rvalues$directory)){
-      res <- boxplot(rvalues$raw.data)
+      res <- boxplot(raw.data, col=raw.data@phenoData@data$Type)
     }
     print(res)
   })
-  output$table <- renderPlot({
+  output$hist <- renderPlot({
     hist(getRawData())
   })
-  output$file_list2 <- renderPlot({
+  output$rna <- renderPlot({
+    raw.data <- getRawData()
     res <- NULL
-    data.deg <- AffyRNAdeg(rvalues$raw.data)
+    data.deg <- AffyRNAdeg(raw.data)
     res <-plotAffyRNAdeg(data.deg)
     print(res)
   })
   output$qc <- renderPlot({
+    raw.data <- getRawData()
     res <- NULL
-    mas5.data <- call.exprs(rvalues$raw.data,"mas5")
-    qcs <- qc(rvalues$raw.data,mas5.data)
+    mas5.data <- call.exprs(raw.data,"mas5")
+    qcs <- qc(raw.data,mas5.data)
     res <-plot(qcs)
     print(res)
   })
   output$rma <- renderPlot({
+    raw.data <- getRawData()
     res <- NULL
-    rma.data <- call.exprs(rvalues$raw.data,"rma")
-    res <-boxplot(exprs(rvalues$raw.data))
+    rma.data <- call.exprs(raw.data,"rma")
+    res <-boxplot(exprs(rma.data), col=raw.data@phenoData@data$Type)
     print(res)
   })
   
   output$plotMA <- renderPlot({
-    num.arrays <- length(rvalues$raw.data)
+    raw.data <- getRawData()
+    num.arrays <- length(raw.data)
     res <- NULL
     if(!is.null(rvalues$directory)){
-      ref.array <- createRefArray(rvalues$raw.data)
-      res <- plotMA(rvalues$raw.data, 1, ref=ref.array, subsampling=10000, size=5, alpha=0.5)
+      ref.array <- createRefArray(raw.data)
+      res <- plotMA(raw.data, 1, ref=ref.array, subsampling=10000, size=5, alpha=0.5)
       
     }
     print(res)
   })
   output$densrma <- renderPlot({
+    raw.data <- getRawData()
     res <- NULL
-    rma.data <- call.exprs(rvalues$raw.data,"rma")
+    rma.data <- call.exprs(raw.data,"rma")
     plot(density(exprs(rma.data[,1])))
   })
 
