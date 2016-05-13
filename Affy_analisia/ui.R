@@ -17,9 +17,9 @@ ui <- fluidPage(
              tabPanel("General",
                 sidebarLayout(
                   sidebarPanel(
-                    #selectInput("fileName", "Select your choice", choices = filename, selected = 1),
                     br(),
-                    verbatimTextOutput("summary"),
+                    uiOutput("fileDelete"),
+                    actionButton("delete","Delete"),
                     br()
                     
                   ),
@@ -30,7 +30,7 @@ ui <- fluidPage(
                                 tabPanel("Plot", plotOutput(outputId="file_list", width="500px")),
                                 tabPanel("Hist", plotOutput(outputId="table", width="500px")),
                                 tabPanel("RNA degradation", plotOutput(outputId="file_list2", width="500px")),
-                                tabPanel("RQC", plotOutput(outputId="qc", width="500px")),
+                                tabPanel("QC", plotOutput(outputId="qc", width="500px")),
                                 tabPanel("Normalized", plotOutput(outputId="rma", width="500px"))
                     )
                   )
@@ -39,19 +39,16 @@ ui <- fluidPage(
             tabPanel("Especific",
                      sidebarLayout(
                        sidebarPanel(
-                         #selectInput("fileName", "Select your choice", choices = filename, selected = 1),
                          br(),
                          uiOutput("fileName"),
                          br()
-                         
                        ),
                        # Show a tabset that includes a plot, summary, and table view
                        # of the generated distribution
                        mainPanel(
                          tabsetPanel(type = "tabs", 
                                      tabPanel("PlotMA", plotOutput(outputId="plotMA", width="500px")),
-                                     tabPanel("Density Normalized", plotOutput(outputId="densrma", width="500px")),
-                                     tabPanel("Density Normalized Line", plotOutput(outputId="densrmaLine", width="500px"))
+                                     tabPanel("Density Normalized", plotOutput(outputId="densrma", width="500px"))
                          )
                        )
                      )

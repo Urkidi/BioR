@@ -46,34 +46,50 @@ server <- function(input, output) {
     }
     return(data)
   })
+    observeEvent(input$delete, { 
+      browser()
+      eliminate ( match(input$filedelete, rvalues$raw.data) )})
   
-  plotMA <- function (data, index) { 
-    m <- exprs(data[,index]) - exprs(data[,id.ref])
-    a <- (exprs(data[,index]) + exprs(data[,id.ref]))/2
-    ma.plot(a,m,cex=0.75,lwd=3)
+  plotMA <- function (data, index, ref, subsampling=NULL, ...) { 
+    #ref <- ref.array
+    expr <- exprs(data[,index])
+    if (!is.null(subsampling)) {
+      id <- sample(1:length(expr), subsampling)
+      expr <- expr[id]
+      ref  <- ref[id]
+    }
+    
+    m <- expr - ref
+    a <- (expr + ref) / 2
+    
+    df <- data.frame(A=a, M=m)
+    ggplot(df, aes(x=A, y=M)) + geom_point(...) + geom_smooth()
+  }
+
+  eliminate <- function(pos){
+    rvalues$raw.data <- getRawData
+    rvalues$raw.data <- rvalues$raw.data[-pos]
   }
   
 
   # OUTPUTS ------------------------------------------------------------
   
+  
+  
   output$fileName <- renderUI({ 
     
-    selectInput("fileName", "choice a file",grep(".CEL",rvalues$file_names, value=T) )
+    selectInput("fileName", "choice a file",grep(".CEL",rvalues$file_names, value=T))
       
   })
-  output$summary <- renderPrint({
-    if(!is.null(rvalues$directory)){
-      dataset <- rvalues$file_names 
-    }
-    
-    list(dataset)
+  output$fileDelete <- renderUI({
+    selectInput(inputId = "filedelete", "choice a file",grep(".CEL",rvalues$file_names, value=T))
   })
   
   output$file_list <- renderPlot({
-    raw.data <- getRawData()
+    getRawData()
     res <- NULL
     if(!is.null(rvalues$directory)){
-      res <- boxplot(raw.data)
+      res <- boxplot(rvalues$raw.data)
     }
     print(res)
   })
@@ -81,55 +97,39 @@ server <- function(input, output) {
     hist(getRawData())
   })
   output$file_list2 <- renderPlot({
-    raw.data <- getRawData()
     res <- NULL
-    data.deg <- AffyRNAdeg(raw.data)
+    data.deg <- AffyRNAdeg(rvalues$raw.data)
     res <-plotAffyRNAdeg(data.deg)
     print(res)
   })
   output$qc <- renderPlot({
-    raw.data <- getRawData()
     res <- NULL
-    mas5.data <- call.exprs(raw.data,"mas5")
-    qcs <- qc(raw.data,mas5.data)
+    mas5.data <- call.exprs(rvalues$raw.data,"mas5")
+    qcs <- qc(rvalues$raw.data,mas5.data)
     res <-plot(qcs)
     print(res)
   })
   output$rma <- renderPlot({
-    raw.data <- getRawData()
     res <- NULL
-    rma.data <- call.exprs(raw.data,"rma")
-    res <-boxplot(exprs(rma.data), col=raw.data@phenoData@data$Type)
+    rma.data <- call.exprs(rvalues$raw.data,"rma")
+    res <-boxplot(exprs(rvalues$raw.data))
     print(res)
   })
   
   output$plotMA <- renderPlot({
-    raw.data <- getRawData()
-    num.arrays <- length(raw.data)
+    num.arrays <- length(rvalues$raw.data)
     res <- NULL
     if(!is.null(rvalues$directory)){
-      medians <- sapply(1:num.arrays, 
-                        FUN=function(i) {
-                          return(median(exprs(raw.data[,i])))
-                        })
-      id.ref <- order(medians)[num.arrays/2]
-      res <- plotMA(raw.data, 1)
+      ref.array <- createRefArray(rvalues$raw.data)
+      res <- plotMA(rvalues$raw.data, 1, ref=ref.array, subsampling=10000, size=5, alpha=0.5)
+      
     }
     print(res)
   })
   output$densrma <- renderPlot({
-    raw.data <- getRawData()
     res <- NULL
-    rma.data <- call.exprs(raw.data,"rma")
-    res <-plot(density(exprs(rma.data[,1]),col=raw.data@phenoData@data$Type[1]))
-    print(res)
-  })
-  output$densrmaLine <- renderPlot({
-    raw.data <- getRawData()
-    res <- NULL
-    rma.data <- call.exprs(raw.data,"rma")
-    res <-lines(density(exprs(rma.data[,1])), col=raw.data@phenoData@data$Type[1])
-    print(res)
+    rma.data <- call.exprs(rvalues$raw.data,"rma")
+    plot(density(exprs(rma.data[,1])))
   })
 
 
