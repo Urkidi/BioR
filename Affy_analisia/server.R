@@ -80,13 +80,16 @@ server <- function(input, output) {
   #---------------------------------------------------------------—
   
   observeEvent(input$delete, { 
-    eliminate ( match(input$filedelete, raw.data) )})
+    eliminate (which(input$data_loader$name==input$fileName)-1)})
+  
   
   
   
   eliminate <- function(pos){
-    rvalues$raw.data <- getRawData
-    rvalues$raw.data <- rvalues$raw.data[-pos]
+    
+    rvalues$raw.data <- rvalues$raw.data[-pos,]
+    getRawData
+    
   }
   # OUTPUTS —----------------------------------------------------------
   
@@ -139,8 +142,8 @@ server <- function(input, output) {
     num.arrays <- length(raw.data)
     res <- NULL
     if(!is.null(rvalues$directory)){
-      indize <- which(rvalues$file_names==input$fileName)
-      res <- image(raw.data[,indize-1])
+      
+      res <- image(raw.data[,indize()])
       
     }
     print(res)
@@ -152,14 +155,14 @@ server <- function(input, output) {
     res <- NULL
     if(!is.null(rvalues$directory)){
       ref.array <- createRefArray(raw.data)
-      res <- plotMA(raw.data, 1, ref=ref.array, subsampling=10000, size=5, alpha=0.5)
+      res <- plotMA(raw.data, indize(), ref=ref.array, subsampling=10000, size=5, alpha=0.5)
       
     }
     print(res)
   })
   output$densrma <- renderPlot({
     rma <- rma.data()
-    plot(density(exprs(rma[,1])))
+    plot(density(exprs(rma[,indize()])))
   })
   
   
