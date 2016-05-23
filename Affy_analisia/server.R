@@ -49,7 +49,7 @@ server <- function(input, output) {
   
   # NORMALIZED DATA —---------------------------------------------------------
   rma.data <- reactive ({ 
-    raw.data <- getRawData()
+    raw.data <- rvalues$raw.data
     call.exprs(raw.data,"rma")
   })
   
@@ -77,22 +77,36 @@ server <- function(input, output) {
     ggplot(df, aes(x=A, y=M)) + geom_point(...) + geom_smooth()
   }
   
+  indize <- reactive({
+    (which(rvalues$file_names==input$fileName))-1
+  })
+  
   #---------------------------------------------------------------—
-  
-  observeEvent(input$delete, { 
-    eliminate (which(input$data_loader$name==input$fileName)-1)})
-  
-  
+
+  observeEvent(
+    input$delete,
+    { 
+    eliminate (which(input$data_loader$name==input$filedelete)-1)
+    }
+    )
   
   
   eliminate <- function(pos){
-    
-    rvalues$raw.data <- rvalues$raw.data[-pos,]
-    getRawData
+
+    rvalues$raw.data <- rvalues$raw.data[-pos]
+    rvalues$file_names <- rvalues$file_names[-pos]
+    #rvalues$file_names <- grep(input$filedelete,rvalues$file_names, ignore.case = TRUE)
+    ##getRawData
     
   }
+  
   # OUTPUTS —----------------------------------------------------------
   
+  output$pos <- renderText({
+    pos <- 0
+    pos <- (which(rvalues$file_names==input$filedelete))-1
+    paste("You have selected", pos)
+  })
   
   
   output$fileName <- renderUI({ 
@@ -105,40 +119,53 @@ server <- function(input, output) {
   })
   
   output$plot <- renderPlot({
-    raw.data <- getRawData()
     res <- NULL
-    if(!is.null(rvalues$directory)){
-      res <- boxplot(raw.data, col=raw.data@phenoData@data$Type)
+    if (is.null(rvalues$file_names)){
+          raw.data <- getRawData()
+          if(!is.null(rvalues$directory)){
+            res <- boxplot(raw.data, col=raw.data@phenoData@data$Type)
+          }
+          print(res)
+    }else{
+      raw.data <- rvalues$raw.data
+      if(!is.null(rvalues$directory)){
+        res <- boxplot(raw.data, col=raw.data@phenoData@data$Type)
+      }
+      print(res)
     }
-    print(res)
+
   })
+  
   output$hist <- renderPlot({
-    hist(getRawData())
+    hist(rvalues$raw.data)
   })
+  
   output$rna <- renderPlot({
-    raw.data <- getRawData()
+    raw.data <- rvalues$raw.data
     res <- NULL
     data.deg <- AffyRNAdeg(raw.data)
     res <-plotAffyRNAdeg(data.deg)
     print(res)
   })
+  
   output$qc <- renderPlot({
-    raw.data <- getRawData()
+    raw.data <- rvalues$raw.data
     res <- NULL
     mas5.data <- call.exprs(raw.data,"mas5")
     qcs <- qc(raw.data,mas5.data)
     res <-plot(qcs)
     print(res)
   })
+  
   output$rma <- renderPlot({
-    raw.data <- getRawData()
+    raw.data <- rvalues$raw.data
     rma <- rma.data()
     res <-boxplot(exprs(rma), col=rma@phenoData@data$Type)
     print(res)
   })
   
   output$image <- renderPlot({
-    raw.data <- getRawData()
+    raw.data <- rvalues$raw.data
     num.arrays <- length(raw.data)
     res <- NULL
     if(!is.null(rvalues$directory)){
@@ -150,7 +177,7 @@ server <- function(input, output) {
   })
   
   output$plotMA <- renderPlot({
-    raw.data <- getRawData()
+    raw.data <- rvalues$raw.data
     num.arrays <- length(raw.data)
     res <- NULL
     if(!is.null(rvalues$directory)){
@@ -160,6 +187,7 @@ server <- function(input, output) {
     }
     print(res)
   })
+  
   output$densrma <- renderPlot({
     rma <- rma.data()
     plot(density(exprs(rma[,indize()])))

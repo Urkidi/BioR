@@ -19,6 +19,7 @@ ui <- fluidPage(
                           br(),
                           uiOutput("fileDelete"),
                           actionButton("delete","Delete"),
+                          textOutput(outputId="pos"), 
                           br()
                           
                         ),
