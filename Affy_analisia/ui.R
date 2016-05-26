@@ -7,6 +7,7 @@ fileLoader <- fileInput (inputId="data_loader",
                          label="Upload Files", 
                          multiple=TRUE)
 ui <- fluidPage(
+  theme = "slate.css",#themes installed:"slate.css" "darks.css" "flatly.css" "sandstone.css" 
   header, 
   fileLoader,
   # Sidebar with controls to select the random distribution type

@@ -5,7 +5,7 @@ library(ggplot2)
 
 
 options(shiny.maxRequestSize = 100*1024^2)
-server <- function(input, output) {
+server <- function(input, output, session) {
   
   #variables
   medians <- NULL
@@ -96,7 +96,16 @@ server <- function(input, output) {
     rvalues$raw.data <- rvalues$raw.data[-pos]
     rvalues$file_names <- rvalues$file_names[-pos]
     #rvalues$file_names <- grep(input$filedelete,rvalues$file_names, ignore.case = TRUE)
-    ##getRawData
+    #updateSelectInput(session,inputId = "fileDelete",choices = as.character(grep(".CEL",rvalues$file_names, value=T)))
+    output$fileName <- renderUI({ 
+      
+      selectInput("fileName", "choose a file",as.character(grep(".CEL",rvalues$file_names, value=T)))
+      
+    })
+    output$fileDelete <- renderUI({
+      selectInput(inputId = "filedelete", "choose a file",grep(".CEL",rvalues$file_names, value=T))
+    })
+    
     
   }
   
@@ -111,11 +120,11 @@ server <- function(input, output) {
   
   output$fileName <- renderUI({ 
     
-    selectInput("fileName", "choice a file",grep(".CEL",rvalues$file_names, value=T))
+    selectInput("fileName", "choose a file",as.character(grep(".CEL",rvalues$file_names, value=T)))
     
   })
   output$fileDelete <- renderUI({
-    selectInput(inputId = "filedelete", "choice a file",grep(".CEL",rvalues$file_names, value=T))
+    selectInput(inputId = "filedelete", "choose a file",grep(".CEL",rvalues$file_names, value=T))
   })
   
   output$plot <- renderPlot({
